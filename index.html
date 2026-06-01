@@ -22,7 +22,7 @@
     <nav class="navbar solid-nav">
         <div class="logo">
             <i class='bx bxs-institution'></i>
-            <span>IIT Ropar <span class="highlight">Predictor</span></span>
+            <span>IIT Ropar 2026 <span class="highlight">Counselling</span></span>
         </div>
         <div class="nav-links">
             <a href="#welcome-section">Home</a>
@@ -45,64 +45,16 @@
             </div>
         </section>
 
-        <!-- Predictor Section -->
-        <section id="predictor-section" class="full-screen-section">
-            <div class="solid-card predictor-card">
-                <h2><i class='bx bx-target-lock highlight'></i> Target Your Branch</h2>
-                
-                <form id="predictor-form">
-                    <div class="form-group">
-                        <label for="rank">JEE Advanced Rank</label>
-                        <div class="input-wrapper">
-                            <i class='bx bx-hash'></i>
-                            <input type="number" id="rank" name="rank" placeholder="e.g., 2500" required min="1">
-                        </div>
-                    </div>
-
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="category">Category</label>
-                            <div class="input-wrapper select-wrapper">
-                                <i class='bx bx-category'></i>
-                                <select id="category" name="category" required>
-                                    <option value="" disabled selected>Select Category</option>
-                                    <option value="OPEN">OPEN</option>
-                                    <option value="EWS">EWS</option>
-                                    <option value="OBC-NCL">OBC-NCL</option>
-                                    <option value="SC">SC</option>
-                                    <option value="ST">ST</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="gender">Gender Pool</label>
-                            <div class="input-wrapper select-wrapper">
-                                <i class='bx bx-user'></i>
-                                <select id="gender" name="gender" required>
-                                    <option value="Gender-Neutral">Gender-Neutral</option>
-                                    <option value="Female-Only">Female-Only (Supernumerary)</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-
-                    <button type="submit" class="btn-primary" id="submit-btn">
-                        <span>Predict Branches</span>
-                        <i class='bx bx-right-arrow-alt'></i>
-                    </button>
-                </form>
+        <!-- Trends Section -->
+        <section id="predictor-section" class="full-screen-section trends-section">
+            <div class="trends-header">
+                <h2>IIT ROPAR Rank <span class="highlight">Trends</span></h2>
+                <p>Track how IIT Ropar cutoffs have evolved over the last 3 years (2023-2025).</p>
             </div>
-
-            <!-- Results Section (Hidden initially) -->
-            <div id="results-container" class="results-container hidden">
-                <div class="results-header">
-                    <h3>Prediction Results</h3>
-                    <p id="results-meta" class="highlight">Rank: 2500 | OPEN | Gender-Neutral</p>
-                </div>
-                
-                <div id="results-list" class="results-list">
-                    <!-- Dynamic result cards will be injected here via JS -->
+            
+            <div class="trends-container">
+                <div id="trends-grid" class="trends-grid">
+                    <!-- Cards will be injected here via JS -->
                 </div>
             </div>
         </section>

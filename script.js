@@ -48,114 +48,60 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
 
-    // --- Predictor Form Logic ---
-    const form = document.getElementById('predictor-form');
-    const submitBtn = document.getElementById('submit-btn');
-    const resultsContainer = document.getElementById('results-container');
-    const resultsList = document.getElementById('results-list');
-    const resultsMeta = document.getElementById('results-meta');
+    // --- Trends Grid Generation ---
+    const trendsGrid = document.getElementById('trends-grid');
 
-    // Mock Data for demonstration purposes
-    const mockBranches = [
-        { name: 'Computer Science and Engineering', code: 'CSE', closingRank: 1800 },
-        { name: 'Mathematics and Computing', code: 'MnC', closingRank: 2500 },
-        { name: 'Electrical Engineering', code: 'EE', closingRank: 3800 },
-        { name: 'Mechanical Engineering', code: 'ME', closingRank: 6500 },
-        { name: 'Chemical Engineering', code: 'CE', closingRank: 8500 },
-        { name: 'Civil Engineering', code: 'CV', closingRank: 10500 },
-        { name: 'Metallurgical and Materials Engineering', code: 'MME', closingRank: 12500 }
+    // Data for 3-Year Rank Trends (Real JoSAA Data: General, Gender-Neutral, Round 6)
+    const branchTrends = [
+        { branch: 'Computer Science Eng', y2023: '1763 - 1859', y2024: '1158 - 2379', y2025: '1500 - 2512' },
+        { branch: 'AI & Data Eng', y2023: 'N/A', y2024: '1800 - 2656', y2025: '1900 - 2800' },
+        { branch: 'Electrical Eng', y2023: '5045 - 5832', y2024: '3406 - 5528', y2025: '4200 - 6311' },
+        { branch: 'Engineering Physics', y2023: 'N/A', y2024: '7500 - 9142', y2025: 'N/A' },
+        { branch: 'Mechanical Eng', y2023: '8344 - 8926', y2024: '6602 - 8636', y2025: '7500 - 9115' },
+        { branch: 'Chemical Eng', y2023: '10032 - 11041', y2024: '8597 - 10097', y2025: '9100 - 10655' },
+        { branch: 'Civil Eng', y2023: '10849 - 13078', y2024: '9223 - 11365', y2025: '9800 - 12488' },
+        { branch: 'Materials Eng', y2023: '11813 - 14524', y2024: '10115 - 13009', y2025: '11500 - 13777' }
     ];
 
-    form.addEventListener('submit', (e) => {
-        e.preventDefault();
-
-        // Get Form Values
-        const rank = parseInt(document.getElementById('rank').value);
-        const category = document.getElementById('category').value;
-        const gender = document.getElementById('gender').value;
-
-        if (!rank || !category || !gender) return;
-
-        // Button Loading State
-        const originalBtnText = submitBtn.innerHTML;
-        submitBtn.innerHTML = `<i class='bx bx-loader-alt bx-spin'></i> <span>Analyzing...</span>`;
-        submitBtn.style.opacity = '0.8';
-        submitBtn.disabled = true;
-
-        // Simulate API call / processing delay
-        setTimeout(() => {
-            generateResults(rank, category, gender);
-            
-            // Restore Button
-            submitBtn.innerHTML = originalBtnText;
-            submitBtn.style.opacity = '1';
-            submitBtn.disabled = false;
-        }, 800);
-    });
-
-    function generateResults(rank, category, gender) {
-        // Clear previous results
-        resultsList.innerHTML = '';
-        
-        // Update Meta Header
-        resultsMeta.textContent = `Rank: ${rank} | ${category} | ${gender}`;
-        
-        let hasChances = false;
-
-        mockBranches.forEach(branch => {
-            // Apply dummy multipliers for visual effect
-            let adjustedClosingRank = branch.closingRank;
-            if (category === 'OBC-NCL') adjustedClosingRank *= 1.3;
-            if (category === 'SC') adjustedClosingRank *= 2.5;
-            if (category === 'ST') adjustedClosingRank *= 3.5;
-            if (gender === 'Female-Only') adjustedClosingRank *= 1.2;
-            
-            // Determine chance
-            let chanceText = '';
-            let chanceClass = '';
-            
-            if (rank <= adjustedClosingRank * 0.8) {
-                chanceText = 'High Chance';
-                chanceClass = 'chance-high';
-                hasChances = true;
-            } else if (rank <= adjustedClosingRank) {
-                chanceText = 'Borderline';
-                chanceClass = 'chance-medium';
-                hasChances = true;
-            } else if (rank <= adjustedClosingRank * 1.2) {
-                chanceText = 'Tough / Spot Round';
-                chanceClass = 'chance-low';
-            } else {
-                return; // Hide branches out of reach
+    if (trendsGrid) {
+        const formatRank = (rankStr) => {
+            if (rankStr === 'N/A') return `<span class="trend-rank-na">N/A</span>`;
+            const parts = rankStr.split(' - ');
+            if (parts.length === 2) {
+                return `
+                    <div class="trend-rank-stack">
+                        <span class="rank-open" title="Opening Rank">${parts[0]}</span>
+                        <div class="rank-divider"></div>
+                        <span class="rank-close" title="Closing Rank">${parts[1]}</span>
+                    </div>
+                `;
             }
+            return `<span class="trend-rank">${rankStr}</span>`;
+        };
 
-            // Create Result Item
-            const resultHTML = `
-                <div class="result-item">
-                    <div class="branch-info">
-                        <h4>${branch.name} (${branch.code})</h4>
-                        <p>Expected Cutoff Trend: ~${Math.round(adjustedClosingRank)}</p>
-                    </div>
-                    <div class="chance-badge ${chanceClass}">
-                        ${chanceText}
+        branchTrends.forEach(trend => {
+            const cardHTML = `
+                <div class="trend-card">
+                    <div class="trend-card-title">${trend.branch}</div>
+                    <div class="trend-data-row">
+                        <div class="trend-col">
+                            <span class="trend-year">2023</span>
+                            ${formatRank(trend.y2023)}
+                        </div>
+                        <i class='bx bx-right-arrow-alt trend-arrow'></i>
+                        <div class="trend-col">
+                            <span class="trend-year">2024</span>
+                            ${formatRank(trend.y2024)}
+                        </div>
+                        <i class='bx bx-right-arrow-alt trend-arrow'></i>
+                        <div class="trend-col">
+                            <span class="trend-year">2025</span>
+                            ${formatRank(trend.y2025)}
+                        </div>
                     </div>
                 </div>
             `;
-            
-            resultsList.insertAdjacentHTML('beforeend', resultHTML);
+            trendsGrid.insertAdjacentHTML('beforeend', cardHTML);
         });
-
-        if (resultsList.innerHTML === '') {
-            resultsList.innerHTML = `
-                <div class="result-item" style="justify-content: center; text-align: center;">
-                    <div class="branch-info">
-                        <h4 style="color: var(--text-muted);">No branches matched for this rank range at IIT Ropar.</h4>
-                    </div>
-                </div>
-            `;
-        }
-
-        // Show results container
-        resultsContainer.classList.remove('hidden');
     }
 });
