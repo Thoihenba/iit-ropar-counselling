@@ -8,7 +8,7 @@
     <!-- Google Fonts: Outfit -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     
     <!-- Boxicons for modern icons -->
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
@@ -16,31 +16,39 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <!-- Background Elements -->
-    <div class="bg-shape shape-1"></div>
-    <div class="bg-shape shape-2"></div>
+    <div id="tsparticles" style="position: fixed; width: 100%; height: 100%; z-index: -2; pointer-events: none;"></div>
+    <div class="dynamic-bg-glow"></div>
 
-    <nav class="navbar glass-panel">
+    <nav class="navbar solid-nav">
         <div class="logo">
             <i class='bx bxs-institution'></i>
             <span>IIT Ropar <span class="highlight">Predictor</span></span>
         </div>
         <div class="nav-links">
-            <a href="#" class="active">Predictor</a>
-            <a href="#">About</a>
+            <a href="#welcome-section">Home</a>
+            <a href="#predictor-section" class="active">Predictor</a>
             <a href="https://github.com/Thoihenba/iit-ropar-counselling" target="_blank" class="github-link"><i class='bx bxl-github'></i></a>
         </div>
     </nav>
 
     <main class="container">
-        <section class="hero">
-            <h1 class="gradient-text">Predict Your Future at IIT Ropar</h1>
-            <p>Enter your JEE Advanced rank and category to discover your chances of securing a seat in various B.Tech programs based on historical JoSAA cutoffs.</p>
+        
+        <!-- Welcome Section -->
+        <section id="welcome-section" class="full-screen-section">
+            <div class="hero">
+                <h1 class="monolithic-title">WELCOME TO <br><span class="highlight">IIT ROPAR</span></h1>
+                <p class="hero-subtitle">Discover your path to excellence. Experience the aura of a premier institute.</p>
+                <a href="#predictor-section" class="scroll-down-btn">
+                    <span>Predict Your Branch</span>
+                    <i class='bx bx-chevron-down'></i>
+                </a>
+            </div>
         </section>
 
-        <section class="predictor-section">
-            <div class="glass-card predictor-card">
-                <h2><i class='bx bx-target-lock'></i> Check Your Chances</h2>
+        <!-- Predictor Section -->
+        <section id="predictor-section" class="full-screen-section">
+            <div class="solid-card predictor-card">
+                <h2><i class='bx bx-target-lock highlight'></i> Target Your Branch</h2>
                 
                 <form id="predictor-form">
                     <div class="form-group">
@@ -90,7 +98,7 @@
             <div id="results-container" class="results-container hidden">
                 <div class="results-header">
                     <h3>Prediction Results</h3>
-                    <p id="results-meta">Rank: 2500 | OPEN | Gender-Neutral</p>
+                    <p id="results-meta" class="highlight">Rank: 2500 | OPEN | Gender-Neutral</p>
                 </div>
                 
                 <div id="results-list" class="results-list">
@@ -98,12 +106,15 @@
                 </div>
             </div>
         </section>
+
     </main>
 
     <footer class="footer">
         <p>A student initiative. Data is based on past trends and does not guarantee admission.</p>
     </footer>
 
+    <!-- tsParticles bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/tsparticles@2/tsparticles.bundle.min.js"></script>
     <script src="script.js"></script>
 </body>
 </html>

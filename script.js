@@ -1,4 +1,54 @@
 document.addEventListener('DOMContentLoaded', () => {
+    
+    // --- Initialize Dynamic Particles ---
+    if (typeof tsParticles !== 'undefined') {
+        tsParticles.load("tsparticles", {
+            background: { color: { value: "transparent" } },
+            fpsLimit: 60,
+            particles: {
+                color: { value: "#d4af37" },
+                links: { color: "#d4af37", distance: 150, enable: true, opacity: 0.15, width: 1 },
+                move: { enable: true, speed: 0.8, direction: "none", random: true, straight: false, outModes: { default: "bounce" } },
+                number: { density: { enable: true, area: 800 }, value: 60 },
+                opacity: { value: 0.4 },
+                shape: { type: "circle" },
+                size: { value: { min: 1, max: 2.5 } }
+            },
+            detectRetina: true
+        });
+    }
+
+    // --- Intersection Observer for Dynamic Background Glow ---
+    const predictorSection = document.getElementById('predictor-section');
+    const navbar = document.querySelector('.navbar');
+
+    const observerOptions = {
+        root: null,
+        rootMargin: '0px',
+        threshold: 0.3 // Trigger when 30% of predictor section is visible
+    };
+
+    const sectionObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                // Add scrolled class to trigger background glow
+                document.body.classList.add('scrolled');
+                // Optional: make navbar transparent when at top, solid when scrolled
+                navbar.style.background = "rgba(0, 0, 0, 0.9)";
+            } else {
+                // Remove scrolled class
+                document.body.classList.remove('scrolled');
+                navbar.style.background = "var(--bg-dark)";
+            }
+        });
+    }, observerOptions);
+
+    if (predictorSection) {
+        sectionObserver.observe(predictorSection);
+    }
+
+
+    // --- Predictor Form Logic ---
     const form = document.getElementById('predictor-form');
     const submitBtn = document.getElementById('submit-btn');
     const resultsContainer = document.getElementById('results-container');
@@ -40,7 +90,7 @@ document.addEventListener('DOMContentLoaded', () => {
             submitBtn.innerHTML = originalBtnText;
             submitBtn.style.opacity = '1';
             submitBtn.disabled = false;
-        }, 1200);
+        }, 800);
     });
 
     function generateResults(rank, category, gender) {
@@ -49,14 +99,11 @@ document.addEventListener('DOMContentLoaded', () => {
         
         // Update Meta Header
         resultsMeta.textContent = `Rank: ${rank} | ${category} | ${gender}`;
-
-        // Generate prediction logic (mocked)
-        // In reality, this would filter based on actual category/gender specific cutoffs
         
         let hasChances = false;
 
         mockBranches.forEach(branch => {
-            // Apply some dummy multipliers for category just for visual effect
+            // Apply dummy multipliers for visual effect
             let adjustedClosingRank = branch.closingRank;
             if (category === 'OBC-NCL') adjustedClosingRank *= 1.3;
             if (category === 'SC') adjustedClosingRank *= 2.5;
@@ -79,7 +126,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 chanceText = 'Tough / Spot Round';
                 chanceClass = 'chance-low';
             } else {
-                return; // Hide branches that are way out of reach
+                return; // Hide branches out of reach
             }
 
             // Create Result Item
@@ -108,10 +155,7 @@ document.addEventListener('DOMContentLoaded', () => {
             `;
         }
 
-        // Show results container smoothly
+        // Show results container
         resultsContainer.classList.remove('hidden');
-        
-        // Scroll to results
-        resultsContainer.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     }
 });
