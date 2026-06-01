@@ -5,6 +5,7 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 
 ### Changed
+- Removed `tsParticles` library in favor of the custom HTML5 Canvas physics engine.
 - Pivoted primary feature from a dynamic Rank Predictor form to a static 3-Year Rank Trends Dashboard grid.
 - Redesigned UI/UX from Glassmorphism (Blue/Slate) to a Monolithic Power aesthetic (Black & Gold).
 - Restructured layout into two distinct full-screen sections (Welcome Hero and Rank Predictor) to improve pacing and impact.

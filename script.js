@@ -1,22 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
     
-    // --- Initialize Dynamic Particles ---
-    if (typeof tsParticles !== 'undefined') {
-        tsParticles.load("tsparticles", {
-            background: { color: { value: "transparent" } },
-            fpsLimit: 60,
-            particles: {
-                color: { value: "#d4af37" },
-                links: { color: "#d4af37", distance: 150, enable: true, opacity: 0.15, width: 1 },
-                move: { enable: true, speed: 0.8, direction: "none", random: true, straight: false, outModes: { default: "bounce" } },
-                number: { density: { enable: true, area: 800 }, value: 60 },
-                opacity: { value: 0.4 },
-                shape: { type: "circle" },
-                size: { value: { min: 1, max: 2.5 } }
-            },
-            detectRetina: true
-        });
-    }
 
     // --- Intersection Observer for Dynamic Background Glow ---
     const predictorSection = document.getElementById('predictor-section');
@@ -55,12 +38,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const branchTrends = [
         { branch: 'Computer Science Eng', y2023: '1763 - 1859', y2024: '1158 - 2379', y2025: '1500 - 2512' },
         { branch: 'AI & Data Eng', y2023: 'N/A', y2024: '1800 - 2656', y2025: '1900 - 2800' },
+        { branch: 'Math & Computing', y2023: 'N/A', y2024: '2800 - 3518', y2025: '3100 - 3954' },
         { branch: 'Electrical Eng', y2023: '5045 - 5832', y2024: '3406 - 5528', y2025: '4200 - 6311' },
-        { branch: 'Engineering Physics', y2023: 'N/A', y2024: '7500 - 9142', y2025: 'N/A' },
+        { branch: 'IC Design & Tech', y2023: 'N/A', y2024: '3815 - 4349', y2025: '4120 - 4652' },
         { branch: 'Mechanical Eng', y2023: '8344 - 8926', y2024: '6602 - 8636', y2025: '7500 - 9115' },
         { branch: 'Chemical Eng', y2023: '10032 - 11041', y2024: '8597 - 10097', y2025: '9100 - 10655' },
         { branch: 'Civil Eng', y2023: '10849 - 13078', y2024: '9223 - 11365', y2025: '9800 - 12488' },
-        { branch: 'Materials Eng', y2023: '11813 - 14524', y2024: '10115 - 13009', y2025: '11500 - 13777' }
+        { branch: 'Materials Eng', y2023: '11813 - 14524', y2024: '10115 - 13009', y2025: '11500 - 13777' },
+        { branch: 'Digital Agriculture', y2023: 'N/A', y2024: 'N/A', y2025: '12000 - 14480' }
     ];
 
     if (trendsGrid) {
