@@ -3,14 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IIT Ropar | JoSAA Rank Predictor</title>
+    <meta name="description" content="IIT Ropar JoSAA counselling guide — cutoff ranks, branch change policy, campus life, FAQ, and more.">
+    <title>IIT Ropar | Counselling Guide 2026</title>
     
-    <!-- Google Fonts: Outfit -->
+    <!-- Google Fonts: Inter (Apple standard) & Cinzel (Hero display) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;800;900&family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     
-    <!-- Boxicons for modern icons -->
+    <!-- Boxicons -->
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     
     <link rel="stylesheet" href="style.css">
@@ -19,54 +20,167 @@
     <canvas id="spiral-canvas" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -2; pointer-events: none;"></canvas>
     <div class="dynamic-bg-glow"></div>
 
-    <nav class="navbar solid-nav">
+    <!-- ═══════════════════════════════════════════════════════
+         NAVBAR
+         ═══════════════════════════════════════════════════════ -->
+    <nav class="navbar" id="navbar">
         <div class="logo">
             <i class='bx bxs-institution'></i>
-            <span>IIT Ropar 2026 <span class="highlight">Counselling</span></span>
+            <span>IIT Ropar <span class="highlight">Counselling</span></span>
         </div>
-        <div class="nav-links">
+        <div class="nav-links" id="navLinks">
             <a href="#welcome-section">Home</a>
-            <a href="#predictor-section" class="active">Predictor</a>
+            <a href="#predictor-section">Trends</a>
+            <a href="#branch-change">Branches</a>
+            <a href="#campus-section">Campus</a>
+            <a href="#faq-section">FAQ</a>
             <a href="https://github.com/Thoihenba/iit-ropar-counselling" target="_blank" class="github-link"><i class='bx bxl-github'></i></a>
         </div>
+        <button class="hamburger" id="hamburger" aria-label="Toggle menu">
+            <span></span><span></span><span></span>
+        </button>
     </nav>
 
-    <main class="container">
-        
-        <!-- Welcome Section -->
+    <main>
+        <!-- ═══════════════════════════════════════════════════
+             1. HERO
+             ═══════════════════════════════════════════════════ -->
         <section id="welcome-section" class="full-screen-section">
             <div class="hero">
-                <h1 class="monolithic-title">WELCOME TO <br><span class="highlight">IIT ROPAR</span></h1>
-                <p class="hero-subtitle">Discover your path to excellence. Experience the aura of a premier institute.</p>
-                <a href="#predictor-section" class="scroll-down-btn">
-                    <span>Predict Your Branch</span>
-                    <i class='bx bx-chevron-down'></i>
+                <span class="hero-prelude hero-fade hero-fade-1">WELCOME TO</span>
+                <h1 class="monolithic-title text-gradient-gold hero-fade hero-fade-1">IIT ROPAR</h1>
+                <p class="hero-subtitle hero-fade hero-fade-2">
+                    <span class="typewriter" data-text="Discover your path to excellence. Experience the aura of a premier institute."></span>
+                </p>
+                <a href="#predictor-section" class="scroll-down-btn hero-fade hero-fade-3">
+                    <span>Explore</span>
+                    <i class='bx bx-chevrons-down'></i>
                 </a>
             </div>
         </section>
 
-        <!-- Trends Section -->
-        <section id="predictor-section" class="full-screen-section trends-section">
-            <div class="trends-header">
-                <h2>IIT ROPAR Rank <span class="highlight">Trends</span></h2>
-                <p>Track how IIT Ropar cutoffs have evolved over the last 3 years (2023-2025).</p>
-            </div>
-            
-            <div class="trends-container">
-                <div id="trends-grid" class="trends-grid">
-                    <!-- Cards will be injected here via JS -->
+        <!-- ═══════════════════════════════════════════════════
+             2. ABOUT
+             ═══════════════════════════════════════════════════ -->
+        <section id="about-section" class="content-section">
+            <div class="section-inner">
+                <div class="section-label animate-on-scroll">About</div>
+                <h2 class="section-heading animate-on-scroll">IIT <span class="text-gradient-gold">Ropar</span></h2>
+                <p class="section-description animate-on-scroll delay-1" id="about-description"></p>
+                <div class="animate-on-scroll delay-2">
+                    <a id="about-link" href="#" target="_blank" rel="noopener" class="btn-minimal">
+                        Visit Official Website <i class='bx bx-right-arrow-alt'></i>
+                    </a>
                 </div>
             </div>
         </section>
 
+        <!-- ═══════════════════════════════════════════════════
+             3. RANK TRENDS
+             ═══════════════════════════════════════════════════ -->
+        <section id="predictor-section" class="content-section alt-bg">
+            <div class="section-inner wide">
+                <div class="section-label animate-on-scroll">Year-over-Year</div>
+                <h2 class="section-heading animate-on-scroll">Rank <span class="text-gradient-emerald">Trends</span></h2>
+                <p class="section-description animate-on-scroll delay-1">Track how IIT Ropar cutoffs have evolved over the last 3 years (2023–2025).</p>
+                
+                <div class="trends-grid animate-on-scroll delay-2" id="trends-grid">
+                    <!-- Cards injected via JS -->
+                </div>
+            </div>
+        </section>
+
+        <!-- ═══════════════════════════════════════════════════
+             4. BRANCH CHANGE POLICY
+             ═══════════════════════════════════════════════════ -->
+        <section id="branch-change" class="content-section">
+            <div class="section-inner">
+                <div class="section-label animate-on-scroll">Flexibility</div>
+                <h2 class="section-heading animate-on-scroll">Branch Change <span class="text-gradient-ruby">Policy</span></h2>
+                <p class="section-description animate-on-scroll delay-1" id="branch-change-description"></p>
+
+                <div class="data-card animate-on-scroll delay-2">
+                    <h3 class="data-card-title">CGPA Cutoffs for Branch Change</h3>
+                    <table class="data-table" id="branch-change-table">
+                        <thead>
+                            <tr><th>Branch</th><th>CGPA Cutoff</th></tr>
+                        </thead>
+                        <tbody>
+                            <!-- Rows injected via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- ═══════════════════════════════════════════════════
+             5. ACADEMICS — FIRST YEAR
+             ═══════════════════════════════════════════════════ -->
+        <section id="academics-section" class="content-section alt-bg">
+            <div class="section-inner wide">
+                <div class="section-label animate-on-scroll">First Year</div>
+                <h2 class="section-heading animate-on-scroll">Academics & <span class="text-gradient-emerald">Curriculum</span></h2>
+
+                <div class="card-grid two-col">
+                    <div class="info-card animate-on-scroll delay-1" id="orientation-card">
+                        <h3 id="orientation-title"></h3>
+                        <p id="orientation-description"></p>
+                        <a id="orientation-link" href="#" target="_blank" rel="noopener" class="btn-minimal"></a>
+                    </div>
+                    <div class="info-card animate-on-scroll delay-2">
+                        <h3>First Semester Courses</h3>
+                        <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 12px; font-style: italic;">*Subject to change</p>
+                        <ul class="course-list" id="courses-list">
+                            <!-- Items injected via JS -->
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ═══════════════════════════════════════════════════
+             6. CAMPUS LIFE
+             ═══════════════════════════════════════════════════ -->
+        <section id="campus-section" class="content-section">
+            <div class="section-inner wide">
+                <div class="section-label animate-on-scroll">Experience</div>
+                <h2 class="section-heading animate-on-scroll">Campus <span class="text-gradient-gold">Life</span></h2>
+
+                <div class="card-grid three-col" id="campus-grid">
+                    <!-- Cards injected via JS -->
+                </div>
+            </div>
+        </section>
+
+        <!-- ═══════════════════════════════════════════════════
+             7. FAQ
+             ═══════════════════════════════════════════════════ -->
+        <section id="faq-section" class="content-section alt-bg">
+            <div class="section-inner">
+                <div class="section-label animate-on-scroll">Common Questions</div>
+                <h2 class="section-heading animate-on-scroll">Frequently <span class="text-gradient-emerald">Asked</span></h2>
+
+                <div class="faq-tabs animate-on-scroll delay-1" id="faq-tabs">
+                    <!-- Tab buttons injected via JS -->
+                </div>
+
+                <div class="faq-accordion animate-on-scroll delay-2" id="faq-accordion">
+                    <!-- Accordion items injected via JS -->
+                </div>
+            </div>
+        </section>
     </main>
 
-    <footer class="footer">
-        <p>A student initiative. Data is based on past trends and does not guarantee admission.</p>
+    <!-- ═══════════════════════════════════════════════════════
+         FOOTER
+         ═══════════════════════════════════════════════════════ -->
+    <footer class="footer" id="site-footer">
+        <!-- Injected via JS -->
     </footer>
 
     <script src="spiral-base64.js"></script>
     <script src="particle-physics.js"></script>
+    <script src="site-data.js"></script>
     <script src="script.js"></script>
 </body>
 </html>

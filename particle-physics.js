@@ -16,25 +16,18 @@ document.addEventListener('DOMContentLoaded', () => {
     // Physics constants
     const SPRING_K = 0.035;     // Stiffer spring for tighter particle formation
     const FRICTION = 0.85;      // Lower friction to stop floating and snap back faster
-    const BROWNIAN = 0.08;      // Slightly increased jitter for a more organic feel
+    const BROWNIAN = 0.01;      // Dramatically reduced jitter for elegance
     
-    let mouse = { x: -1000, y: -1000, clickForce: 0, clicked: false };
+    let mouse = { x: -1000, y: -1000, clicked: false };
     let currentScroll = window.scrollY;
     
-    // Track Mouse
+    // Track Mouse for Magnetic Hover
     window.addEventListener('mousemove', (e) => {
         mouse.x = e.clientX;
         mouse.y = e.clientY;
     });
     
-    // Click Repulsion
-    window.addEventListener('mousedown', () => {
-        mouse.clicked = true;
-        mouse.clickForce = 15; // Reduced blast strength as requested
-    });
-    window.addEventListener('mouseup', () => {
-        mouse.clicked = false;
-    });
+    // The glow/wave system has been completely scrapped.
 
     // Scroll Dispersion
     window.addEventListener('scroll', () => {
@@ -102,19 +95,17 @@ document.addEventListener('DOMContentLoaded', () => {
             this.vx += (Math.random() - 0.5) * BROWNIAN;
             this.vy += (Math.random() - 0.5) * BROWNIAN;
 
-            // 3. Click Repulsion
-            if (mouse.clickForce > 0) {
-                let mdx = this.x - mouse.x;
-                let mdy = this.y - mouse.y;
-                let dist = Math.sqrt(mdx * mdx + mdy * mdy);
-                if (dist < 150) {
-                    let force = (150 - dist) / 150;
-                    this.vx += (mdx / dist) * force * mouse.clickForce;
-                    this.vy += (mdy / dist) * force * mouse.clickForce;
-                }
+            // 3. Magnetic Hover (Fluid Surface Tension)
+            let mdx = mouse.x - this.x;
+            let mdy = mouse.y - this.y;
+            let distToMouse = Math.sqrt(mdx * mdx + mdy * mdy);
+            
+            // Smoothly pull particles towards mouse if within radius
+            if (distToMouse < 200) {
+                let pullStrength = (200 - distToMouse) / 200;
+                this.vx += (mdx / distToMouse) * pullStrength * 0.4;
+                this.vy += (mdy / distToMouse) * pullStrength * 0.4;
             }
-
-            // 4. Scroll Dispersion removed (handled by spring target offset above)
 
             // Apply friction and velocity
             this.vx *= FRICTION;
@@ -124,8 +115,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         draw(ctx) {
-            ctx.fillStyle = this.color;
             let drawSize = this.currentSize || this.size;
+            
+            ctx.fillStyle = this.color;
             ctx.fillRect(this.x, this.y, drawSize, drawSize);
         }
     }
@@ -178,6 +170,20 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     let particles = [];
+    let bgParticles = []; // Edge data streams
+    
+    // Generate ambient background data streams
+    for(let i=0; i<150; i++) {
+        bgParticles.push({
+            x: Math.random() * width,
+            y: Math.random() * height,
+            size: Math.random() * 1.0 + 0.3,    // Smaller particles
+            speedY: -Math.random() * 0.15 - 0.05, // Slower movement
+            alpha: Math.random() * 0.15 + 0.05,   // Duller baseline opacity
+            glowIntensity: 0, // Current glow state
+            glowTarget: 0     // Target glow state for smooth interpolation
+        });
+    }
     
     const spiralImage = new Image();
     
@@ -200,16 +206,22 @@ document.addEventListener('DOMContentLoaded', () => {
     else spiralImage.src = 'spiral.png';
 
     let frameCount = 0;
+    let introProgress = 0;
 
     function animate() {
         frameCount++;
         
+        // Smooth intro fade-in over ~1.5 seconds (100 frames at 60fps)
+        if (introProgress < 1) {
+            introProgress += 0.01;
+            if (introProgress > 1) introProgress = 1;
+        }
+        // Elegant sine easing for the intro
+        let easedIntro = Math.sin(introProgress * Math.PI / 2);
+        
         // Clear screen with a very faint trail effect
         ctx.fillStyle = 'rgba(10, 10, 10, 0.3)';
         ctx.fillRect(0, 0, width, height);
-
-        // Decay click forces
-        if (mouse.clickForce > 0) mouse.clickForce *= 0.9;
 
         // Dynamically calculate maximum scroll distance of the document
         let maxScroll = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
@@ -218,15 +230,77 @@ document.addEventListener('DOMContentLoaded', () => {
         // This prevents the "flicker" caused by browser overscroll or margin discrepancies.
         let adjustedMax = Math.max(1, maxScroll - 150);
         
-        // Calculate global opacity
-        let globalOpacity = 1 - (currentScroll / adjustedMax);
+        // Calculate global opacity based on scroll
+        let scrollOpacity = 1 - (currentScroll / adjustedMax);
+        scrollOpacity = Math.max(0, Math.min(1, scrollOpacity));
+        scrollOpacity = scrollOpacity * scrollOpacity; // Quadratic easing for scroll
         
-        // Clamp between 0 and 1
-        globalOpacity = Math.max(0, Math.min(1, globalOpacity));
+        // Final global opacity combines scroll fade and the intro float-in fade
+        let globalOpacity = scrollOpacity * easedIntro;
         
-        // Apply quadratic easing so the tail of the fade feels much smoother to the human eye
-        globalOpacity = globalOpacity * globalOpacity;
+        // --- AMBIENT BACKGROUND LAYER ---
+        // 1. Ambient Depth Field (Giant blurred gradients to create cinematic depth)
+        ctx.globalAlpha = globalOpacity * 0.6; // Slightly more transparent than main
         
+        let grad1 = ctx.createRadialGradient(width * 0.15, height * 0.3, 0, width * 0.15, height * 0.3, width * 0.4);
+        grad1.addColorStop(0, 'rgba(25, 45, 35, 0.15)'); // Soft dark green
+        grad1.addColorStop(1, 'rgba(0, 0, 0, 0)');
+        ctx.fillStyle = grad1;
+        ctx.fillRect(0, 0, width, height);
+
+        let grad2 = ctx.createRadialGradient(width * 0.85, height * 0.7, 0, width * 0.85, height * 0.7, width * 0.4);
+        grad2.addColorStop(0, 'rgba(50, 40, 10, 0.15)'); // Soft dark gold
+        grad2.addColorStop(1, 'rgba(0, 0, 0, 0)');
+        ctx.fillStyle = grad2;
+        ctx.fillRect(0, 0, width, height);
+
+        // 2. Data Streams (Edge drifting streaks with glowing heads)
+        bgParticles.forEach(p => {
+            p.y += p.speedY;
+            if (p.y < -10) p.y = height + 10;
+            
+            // Randomly trigger a fuzzy glow on the head
+            if (Math.random() < 0.002) { // Less frequent
+                p.glowTarget = Math.random() * 0.5 + 0.1; // Duller target intensity
+            }
+            
+            // Smoothly interpolate the glow (slower speed)
+            p.glowIntensity += (p.glowTarget - p.glowIntensity) * 0.015;
+            
+            // Slowly decay target back to 0 so it fades out naturally (slower deglow)
+            p.glowTarget *= 0.992;
+            
+            // Draw the streak (tail)
+            ctx.globalAlpha = p.alpha * globalOpacity * 0.3; // Fainter tail
+            ctx.strokeStyle = 'rgba(212, 175, 55, 0.5)'; // Duller gold
+            ctx.lineWidth = p.size;
+            ctx.beginPath();
+            ctx.moveTo(p.x, p.y);
+            ctx.lineTo(p.x, p.y - p.speedY * 30); // Tail length follows slow path
+            ctx.stroke();
+            
+            // Draw the head (core)
+            ctx.globalAlpha = p.alpha * globalOpacity;
+            ctx.fillStyle = 'rgba(255, 220, 100, 0.5)'; // Duller head
+            ctx.fillRect(p.x - p.size/2, p.y - p.size/2, p.size*2, p.size*2);
+            
+            // Draw the fuzzy random glow around the head
+            if (p.glowIntensity > 0.02) {
+                ctx.globalAlpha = p.glowIntensity * globalOpacity;
+                
+                // Radial gradient for a soft, fuzzy bloom (Reduced fuzz radius)
+                let radGrad = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.size * 3.5);
+                radGrad.addColorStop(0, 'rgba(255, 230, 100, 0.6)'); // Duller glow
+                radGrad.addColorStop(1, 'rgba(255, 230, 100, 0)');
+                ctx.fillStyle = radGrad;
+                
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.size * 3.5, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        });
+        
+        // --- MAIN FOREGROUND LAYER ---
         ctx.globalAlpha = globalOpacity;
 
         particles.forEach(p => {
