@@ -18,6 +18,7 @@ All notable changes to this project will be documented in this file.
 - Removed translucent backgrounds, replacing them with stark, solid off-black cards for an authoritative feel.
 
 ### Added
+- Added official JoSAA 2023 Round 5 opening and closing rank cutoffs for General, OBC-NCL, EWS, SC, and ST categories (both Gender Neutral and Female pools) in `site-data.js`.
 - Added new "Branch Info" section listing all B.Tech branches in order, featuring a "NEW" badge for Engineering Science.
 - Added `tsParticles` library for a majestic, slow-moving golden particle network in the background.
 - Changed Navbar logo text to 'IIT Ropar 2026 Counselling'
