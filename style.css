@@ -118,7 +118,7 @@ body.scrolled .dynamic-bg-glow { opacity: 1; }
     justify-content: space-between;
     align-items: center;
     padding: 0 5%;
-    height: 64px;
+    height: 96px;
     position: fixed;
     top: 0;
     width: 100%;
@@ -140,7 +140,7 @@ body.scrolled .dynamic-bg-glow { opacity: 1; }
 }
 
 .nav-img-logo {
-    height: 38px;
+    height: 64px;
     width: auto;
     object-fit: contain;
     border-radius: 50%;
@@ -786,7 +786,7 @@ body.scrolled .dynamic-bg-glow { opacity: 1; }
     .nav-links {
         display: none;
         position: fixed;
-        top: 64px;
+        top: 96px;
         left: 0;
         right: 0;
         background: rgba(0, 0, 0, 0.95);
