@@ -5,6 +5,7 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 
 ### Changed
+- Split the "Branches" navigation link into two separate links: "Branches" and "Branch Change".
 - Removed `tsParticles` library in favor of the custom HTML5 Canvas physics engine.
 - Pivoted primary feature from a dynamic Rank Predictor form to a static 3-Year Rank Trends Dashboard grid.
 - Redesigned UI/UX from Glassmorphism (Blue/Slate) to a Monolithic Power aesthetic (Black & Gold).
@@ -17,6 +18,7 @@ All notable changes to this project will be documented in this file.
 - Removed translucent backgrounds, replacing them with stark, solid off-black cards for an authoritative feel.
 
 ### Added
+- Added new "Branch Info" section listing all B.Tech branches in order, featuring a "NEW" badge for Engineering Science.
 - Added `tsParticles` library for a majestic, slow-moving golden particle network in the background.
 - Changed Navbar logo text to 'IIT Ropar 2026 Counselling'
 - Initial project structure (`index.html`, `style.css`, `script.js`).
