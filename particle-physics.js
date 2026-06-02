@@ -9,15 +9,14 @@ document.addEventListener('DOMContentLoaded', () => {
     let height = canvas.height = window.innerHeight;
 
     window.addEventListener('resize', () => {
-        width = canvas.width = window.innerWidth;
-        height = canvas.height = window.innerHeight;
-        initParticles(); // Re-center on resize
+        // Simple reload on resize to recreate targets
+        location.reload(); 
     });
 
     // Physics constants
-    const SPRING_K = 0.005;     // Softer spring for slower, floatier motion
-    const FRICTION = 0.92;      // Higher friction for smoother gliding
-    const BROWNIAN = 0.15;      // Less jitter
+    const SPRING_K = 0.035;     // Stiffer spring for tighter particle formation
+    const FRICTION = 0.85;      // Lower friction to stop floating and snap back faster
+    const BROWNIAN = 0.08;      // Slightly increased jitter for a more organic feel
     
     let mouse = { x: -1000, y: -1000, clickForce: 0, clicked: false };
     let currentScroll = window.scrollY;
@@ -31,7 +30,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Click Repulsion
     window.addEventListener('mousedown', () => {
         mouse.clicked = true;
-        mouse.clickForce = 50; // Initial blast strength
+        mouse.clickForce = 15; // Reduced blast strength as requested
     });
     window.addEventListener('mouseup', () => {
         mouse.clicked = false;
@@ -43,14 +42,24 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     class Particle {
-        constructor(x, y, color) {
+        constructor(x, y, color, objCenterX, objCenterY) {
             // Start scattered randomly
             this.x = Math.random() * width;
             this.y = Math.random() * height;
             
-            // Target position from the image
-            this.targetX = x;
-            this.targetY = y;
+            // Image center for rotation
+            this.objCenterX = objCenterX;
+            this.objCenterY = objCenterY;
+            
+            // Store original coordinates relative to center for 3D projection
+            this.dx = x - objCenterX;
+            this.dy = y - objCenterY;
+            
+            // Give the object actual 3D volume (thickness) so it's not a flat plane
+            // The further from the center, the thinner it gets, like a lenticular galaxy
+            let distFromCenter = Math.sqrt(this.dx * this.dx + this.dy * this.dy);
+            let maxThickness = 150 - (distFromCenter * 0.3);
+            this.dz = (Math.random() - 0.5) * Math.max(20, maxThickness);
             
             // Physics
             this.vx = (Math.random() - 0.5) * 10;
@@ -59,24 +68,35 @@ document.addEventListener('DOMContentLoaded', () => {
             this.color = color;
         }
 
-        update() {
-            // Calculate outward direction from center of screen
-            let centerX = width / 2;
-            let centerY = height / 2;
-            let dxCenter = this.targetX - centerX;
-            let dyCenter = this.targetY - centerY;
-            let distCenter = Math.sqrt(dxCenter * dxCenter + dyCenter * dyCenter) || 1;
+        update(frameCount) {
+            // Rotation is stopped as requested, keeping the fixed angle at 0
+            let angleY = 0; 
             
-            // Push targets outward based on how far we've scrolled down
-            let scrollPush = currentScroll * 2.0;
-            let curTargetX = this.targetX + (dxCenter / distCenter) * scrollPush;
-            let curTargetY = this.targetY + (dyCenter / distCenter) * scrollPush;
+            let cosY = Math.cos(angleY);
+            let sinY = Math.sin(angleY);
+            
+            // 1. Rotate around Y-axis (vertical axis)
+            let finalX = this.dx * cosY - this.dz * sinY;
+            let finalZ = this.dz * cosY + this.dx * sinY;
+            
+            // Y coordinate is completely unaffected by vertical rotation
+            let finalY = this.dy;
+            
+            // Simple perspective projection (camera focal length ~800)
+            let persp = 800 / (800 + finalZ);
+            
+            // Apply perspective to X and Y
+            let curTargetX = this.objCenterX + finalX * persp;
+            let curTargetY = this.objCenterY + finalY * persp;
+            
+            // Scale particle size based on Z-depth for a true 3D feel
+            this.currentSize = this.size * persp;
 
-            // 1. Spring Force (pull towards dynamic target position)
-            let dx = curTargetX - this.x;
-            let dy = curTargetY - this.y;
-            this.vx += dx * SPRING_K;
-            this.vy += dy * SPRING_K;
+            // 1. Spring Force (pull towards dynamic 3D projected target position)
+            let diffX = curTargetX - this.x;
+            let diffY = curTargetY - this.y;
+            this.vx += diffX * SPRING_K;
+            this.vy += diffY * SPRING_K;
 
             // 2. Brownian Motion (jitter)
             this.vx += (Math.random() - 0.5) * BROWNIAN;
@@ -105,36 +125,36 @@ document.addEventListener('DOMContentLoaded', () => {
 
         draw(ctx) {
             ctx.fillStyle = this.color;
-            ctx.fillRect(this.x, this.y, this.size, this.size);
+            let drawSize = this.currentSize || this.size;
+            ctx.fillRect(this.x, this.y, drawSize, drawSize);
         }
     }
 
-    function initParticles() {
-        particles = [];
-        
-        // Use an offscreen canvas to analyze image pixels
+    function extractParticles(img, destCenterX, destCenterY, customScale, forceWhite = false) {
         const offscreen = document.createElement('canvas');
         const octx = offscreen.getContext('2d');
         
-        // Scale image to fit screen reasonably, scaled up larger
-        let scale = Math.min(width / image.width, height / image.height) * 1.3;
-        let drawW = Math.floor(image.width * scale);
-        let drawH = Math.floor(image.height * scale);
+        // Base scale calculation to fit screen, multiplied by custom modifier
+        let baseScale = Math.min(width / img.width, height / img.height);
+        let finalScale = baseScale * customScale;
+        
+        let drawW = Math.floor(img.width * finalScale);
+        let drawH = Math.floor(img.height * finalScale);
         
         offscreen.width = drawW;
         offscreen.height = drawH;
         
-        octx.drawImage(image, 0, 0, drawW, drawH);
+        octx.drawImage(img, 0, 0, drawW, drawH);
         
         const imageData = octx.getImageData(0, 0, drawW, drawH);
         const data = imageData.data;
         
-        // Center offsets
-        let offsetX = Math.floor((width - drawW) / 2);
-        let offsetY = Math.floor((height - drawH) / 2);
+        // Calculate offsets to place image at the requested center point
+        let offsetX = Math.floor(destCenterX - drawW / 2);
+        let offsetY = Math.floor(destCenterY - drawH / 2);
 
-        // Skip pixels for performance. Higher skip = fewer particles.
-        const skip = 5; 
+        // Skip pixels for performance. 
+        const skip = forceWhite ? 4 : 5; 
         
         for (let y = 0; y < drawH; y += skip) {
             for (let x = 0; x < drawW; x += skip) {
@@ -147,11 +167,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     let g = data[index + 1];
                     let b = data[index + 2];
                     
-                    // Filter out dark background pixels. The spiral is bright green/gold.
-                    // This ensures only the glowing parts are converted to particles.
-                    if (r + g + b > 200) {
-                        let color = `rgba(${r},${g},${b},${alpha/255})`;
-                        particles.push(new Particle(x + offsetX, y + offsetY, color));
+                    // Filter out dark background pixels
+                    if (r + g + b > 150) {
+                        let color = forceWhite ? `rgba(255,255,255,${alpha/255})` : `rgba(${r},${g},${b},${alpha/255})`;
+                        particles.push(new Particle(x + offsetX, y + offsetY, color, destCenterX, destCenterY));
                     }
                 }
             }
@@ -159,25 +178,32 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     let particles = [];
-    const image = new Image();
-
-    image.onload = () => {
-        initParticles();
-        animate();
-    };
     
-    image.onerror = (e) => {
-        animate();
+    const spiralImage = new Image();
+    
+    let imagesLoaded = 0;
+    const checkStart = () => {
+        imagesLoaded++;
+        if (imagesLoaded === 1) {
+            // Central Spiral (large)
+            extractParticles(spiralImage, width / 2, height / 2, 1.04, false);
+            
+            animate();
+        }
     };
 
-    // Set src AFTER onload to ensure event fires even for cached/base64 images
-    if (typeof SPIRAL_BASE64 !== 'undefined') {
-        image.src = SPIRAL_BASE64;
-    } else {
-        image.src = 'spiral.png';
-    }
+    spiralImage.onload = checkStart;
+    spiralImage.onerror = checkStart; // fallback so it doesn't hang if one fails
+
+    // Load base64 or fallback images
+    if (typeof SPIRAL_BASE64 !== 'undefined') spiralImage.src = SPIRAL_BASE64;
+    else spiralImage.src = 'spiral.png';
+
+    let frameCount = 0;
 
     function animate() {
+        frameCount++;
+        
         // Clear screen with a very faint trail effect
         ctx.fillStyle = 'rgba(10, 10, 10, 0.3)';
         ctx.fillRect(0, 0, width, height);
@@ -185,10 +211,30 @@ document.addEventListener('DOMContentLoaded', () => {
         // Decay click forces
         if (mouse.clickForce > 0) mouse.clickForce *= 0.9;
 
+        // Dynamically calculate maximum scroll distance of the document
+        let maxScroll = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
+        
+        // We add a 150px buffer so it hits 0% opacity BEFORE the absolute physical bottom.
+        // This prevents the "flicker" caused by browser overscroll or margin discrepancies.
+        let adjustedMax = Math.max(1, maxScroll - 150);
+        
+        // Calculate global opacity
+        let globalOpacity = 1 - (currentScroll / adjustedMax);
+        
+        // Clamp between 0 and 1
+        globalOpacity = Math.max(0, Math.min(1, globalOpacity));
+        
+        // Apply quadratic easing so the tail of the fade feels much smoother to the human eye
+        globalOpacity = globalOpacity * globalOpacity;
+        
+        ctx.globalAlpha = globalOpacity;
+
         particles.forEach(p => {
-            p.update();
+            p.update(frameCount);
             p.draw(ctx);
         });
+        
+        ctx.globalAlpha = 1.0; // Reset for background clear on next frame
 
         requestAnimationFrame(animate);
     }
