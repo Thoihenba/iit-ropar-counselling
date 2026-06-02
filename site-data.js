@@ -154,32 +154,62 @@ const siteData = {
     rankTrends: {
         "General": {
             "Gender Neutral": {
-                "Artificial Intelligence and Data Engineering": { y2023: "N/A", y2024: "2245 - 2405", y2025: "2376 - 3191" },
-                "Computer Science and Engineering": { y2023: "N/A", y2024: "1158 - 2234", y2025: "1477 - 2357" },
-                "Mathematics and Computing": { y2023: "N/A", y2024: "1755 - 2974", y2025: "2122 - 3814" },
-                "Electrical Engineering": { y2023: "N/A", y2024: "3406 - 5209", y2025: "3940 - 5705" },
-                "IC Design & Technology": { y2023: "N/A", y2024: "4633 - 5217", y2025: "4633 - 5187" },
-                "Mechanical Engineering": { y2023: "N/A", y2024: "6602 - 7844", y2025: "6904 - 8009" },
-                "Chemical Engineering": { y2023: "N/A", y2024: "8597 - 9603", y2025: "7616 - 9373" },
-                "Civil Engineering": { y2023: "N/A", y2024: "9223 - 10771", y2025: "9142 - 10645" },
-                "Metallurgical and Materials Engineering": { y2023: "N/A", y2024: "10115 - 11313", y2025: "10655 - 11460" },
-                "Digital Agriculture": { y2023: "N/A", y2024: "9339 - 13148", y2025: "9339 - 13105" }
+                "Artificial Intelligence and Data Engineering": { y2023: "N/A", y2024: "2245 - 2405", y2025: "2400 - 3301" },
+                "Computer Science and Engineering": { y2023: "N/A", y2024: "1158 - 2234", y2025: "1477 - 2394" },
+                "Mathematics and Computing": { y2023: "N/A", y2024: "1755 - 2974", y2025: "2122 - 3826" },
+                "Electrical Engineering": { y2023: "N/A", y2024: "3406 - 5209", y2025: "3940 - 5859" },
+                "IC Design & Technology": { y2023: "N/A", y2024: "4633 - 5217", y2025: "4759 - 5526" },
+                "Engineering Physics": { y2023: "N/A", y2024: "N/A", y2025: "7827 - 8446" },
+                "Mechanical Engineering": { y2023: "N/A", y2024: "6602 - 7844", y2025: "6978 - 8196" },
+                "Chemical Engineering": { y2023: "N/A", y2024: "8597 - 9603", y2025: "8305 - 9594" },
+                "Civil Engineering": { y2023: "N/A", y2024: "9223 - 10771", y2025: "9142 - 10798" },
+                "Metallurgical and Materials Engineering": { y2023: "N/A", y2024: "10115 - 11313", y2025: "10696 - 11504" },
+                "Digital Agriculture": { y2023: "N/A", y2024: "9339 - 13148", y2025: "9339 - 13685" }
             },
             "Female": {
-                "Artificial Intelligence and Data Engineering": { y2023: "N/A", y2024: "N/A", y2025: "2376 - 3191" },
-                "Computer Science and Engineering": { y2023: "N/A", y2024: "N/A", y2025: "1477 - 2357" },
-                "Mathematics and Computing": { y2023: "N/A", y2024: "N/A", y2025: "2122 - 3814" },
-                "Electrical Engineering": { y2023: "N/A", y2024: "N/A", y2025: "3940 - 5705" },
-                "IC Design & Technology": { y2023: "N/A", y2024: "N/A", y2025: "4633 - 5187" },
-                "Mechanical Engineering": { y2023: "N/A", y2024: "N/A", y2025: "6904 - 8009" },
-                "Chemical Engineering": { y2023: "N/A", y2024: "N/A", y2025: "7616 - 9373" },
-                "Civil Engineering": { y2023: "N/A", y2024: "N/A", y2025: "9142 - 10645" },
-                "Metallurgical and Materials Engineering": { y2023: "N/A", y2024: "N/A", y2025: "10655 - 11460" },
-                "Digital Agriculture": { y2023: "N/A", y2024: "N/A", y2025: "9339 - 13105" }
+                "Artificial Intelligence and Data Engineering": { y2023: "N/A", y2024: "N/A", y2025: "5982 - 7458" },
+                "Computer Science and Engineering": { y2023: "N/A", y2024: "N/A", y2025: "3820 - 6721" },
+                "Mathematics and Computing": { y2023: "N/A", y2024: "N/A", y2025: "7735 - 8968" },
+                "Electrical Engineering": { y2023: "N/A", y2024: "N/A", y2025: "8828 - 13650" },
+                "IC Design & Technology": { y2023: "N/A", y2024: "N/A", y2025: "9429 - 9891" },
+                "Mechanical Engineering": { y2023: "N/A", y2024: "N/A", y2025: "14534 - 16667" },
+                "Chemical Engineering": { y2023: "N/A", y2024: "N/A", y2025: "16373 - 16450" },
+                "Civil Engineering": { y2023: "N/A", y2024: "N/A", y2025: "19804 - 20462" },
+                "Metallurgical and Materials Engineering": { y2023: "N/A", y2024: "N/A", y2025: "21792 - 22664" },
+                "Digital Agriculture": { y2023: "N/A", y2024: "N/A", y2025: "21565 - 23540" },
+                "Engineering Physics": { y2023: "N/A", y2024: "N/A", y2025: "18285 - 19091" }
             }
         },
         "EWS": { "Gender Neutral": {}, "Female": {} },
-        "OBC-NCL": { "Gender Neutral": {}, "Female": {} },
+        "OBC-NCL": {
+            "categoryRank": "OBC-NCL",
+            "Gender Neutral": {
+                "Artificial Intelligence and Data Engineering": { y2023: "N/A", y2024: "N/A", y2025: "1120 - 1541" },
+                "Chemical Engineering": { y2023: "N/A", y2024: "N/A", y2025: "3095 - 3836" },
+                "Civil Engineering": { y2023: "N/A", y2024: "N/A", y2025: "4229 - 4296" },
+                "Computer Science and Engineering": { y2023: "N/A", y2024: "N/A", y2025: "696 - 1233" },
+                "Digital Agriculture": { y2023: "N/A", y2024: "N/A", y2025: "4401 - 5523" },
+                "Electrical Engineering": { y2023: "N/A", y2024: "N/A", y2025: "1552 - 2853" },
+                "IC Design & Technology": { y2023: "N/A", y2024: "N/A", y2025: "2168 - 2487" },
+                "Engineering Physics": { y2023: "N/A", y2024: "N/A", y2025: "4132 - 4306" },
+                "Mathematics and Computing": { y2023: "N/A", y2024: "N/A", y2025: "1253 - 1933" },
+                "Mechanical Engineering": { y2023: "N/A", y2024: "N/A", y2025: "3168 - 3703" },
+                "Metallurgical and Materials Engineering": { y2023: "N/A", y2024: "N/A", y2025: "4386 - 5095" }
+            },
+            "Female": {
+                "Artificial Intelligence and Data Engineering": { y2023: "N/A", y2024: "N/A", y2025: "3557 - 4293" },
+                "Chemical Engineering": { y2023: "N/A", y2024: "N/A", y2025: "7167 - 7927" },
+                "Civil Engineering": { y2023: "N/A", y2024: "N/A", y2025: "8246 - 8254" },
+                "Computer Science and Engineering": { y2023: "N/A", y2024: "N/A", y2025: "2668 - 3550" },
+                "Digital Agriculture": { y2023: "N/A", y2024: "N/A", y2025: "9118 - 9118" },
+                "Electrical Engineering": { y2023: "N/A", y2024: "N/A", y2025: "5137 - 6381" },
+                "IC Design & Technology": { y2023: "N/A", y2024: "N/A", y2025: "6307 - 6307" },
+                "Engineering Physics": { y2023: "N/A", y2024: "N/A", y2025: "8224 - 8224" },
+                "Mathematics and Computing": { y2023: "N/A", y2024: "N/A", y2025: "3766 - 4915" },
+                "Mechanical Engineering": { y2023: "N/A", y2024: "N/A", y2025: "7807 - 8380" },
+                "Metallurgical and Materials Engineering": { y2023: "N/A", y2024: "N/A", y2025: "8709 - 9123" }
+            }
+        },
         "SC": { "Gender Neutral": {}, "Female": {} },
         "ST": { "Gender Neutral": {}, "Female": {} }
     }

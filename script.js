@@ -106,12 +106,28 @@ document.addEventListener('DOMContentLoaded', () => {
 
         trendsGrid.appendChild(catWrap);
 
+        // Category rank note element (updated on category change)
+        const catNote = document.createElement('div');
+        catNote.className = 'category-rank-note';
+        catNote.style.margin = '8px 0 10px';
+        catNote.style.color = 'var(--text-muted)';
+        catNote.style.display = 'none';
+        trendsGrid.appendChild(catNote);
+
         const poolContainer = document.createElement('div');
         poolContainer.className = 'rank-pool-wrap';
         trendsGrid.appendChild(poolContainer);
 
         function renderPoolTabs(category) {
             poolContainer.innerHTML = '';
+            // Update shared category rank note if present
+            const catMeta = siteData.rankTrends[category] || {};
+            if (catMeta.categoryRank) {
+                catNote.textContent = `${catMeta.categoryRank} (category rank)`;
+                catNote.style.display = 'block';
+            } else {
+                catNote.style.display = 'none';
+            }
             const pools = ['Gender Neutral','Female'];
             let activePool = pools[0];
 
