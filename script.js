@@ -94,7 +94,7 @@ document.addEventListener('DOMContentLoaded', () => {
         categories.forEach((cat, i) => {
             const b = document.createElement('button');
             b.className = 'rank-cat' + (i===0 ? ' active' : '');
-            b.textContent = cat;
+            b.textContent = cat === 'OBC-NCL' ? 'OBC-NCL (category rank)' : cat;
             b.addEventListener('click', () => {
                 catWrap.querySelectorAll('button').forEach(x=>x.classList.remove('active'));
                 b.classList.add('active');
