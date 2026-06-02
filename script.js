@@ -74,62 +74,106 @@ document.addEventListener('DOMContentLoaded', () => {
     if (aboutDesc) aboutDesc.textContent = siteData.about.description;
     if (aboutLink) aboutLink.href = siteData.about.officialWebsiteUrl;
 
-    // ─── RANK TRENDS ────────────────────────────────────────
+    // ─── RANK TRENDS (tabbed by category + seat pool) ─────────
     const trendsGrid = document.getElementById('trends-grid');
 
-    const branchTrends = [
-        { branch: 'Computer Science Eng', y2023: '1763 - 1859', y2024: '1158 - 2379', y2025: '1500 - 2512' },
-        { branch: 'AI & Data Eng', y2023: 'N/A', y2024: '1800 - 2656', y2025: '1900 - 2800' },
-        { branch: 'Math & Computing', y2023: 'N/A', y2024: '2800 - 3518', y2025: '3100 - 3954' },
-        { branch: 'Electrical Eng', y2023: '5045 - 5832', y2024: '3406 - 5528', y2025: '4200 - 6311' },
-        { branch: 'IC Design & Tech', y2023: 'N/A', y2024: '3815 - 4349', y2025: '4120 - 4652' },
-        { branch: 'Mechanical Eng', y2023: '8344 - 8926', y2024: '6602 - 8636', y2025: '7500 - 9115' },
-        { branch: 'Chemical Eng', y2023: '10032 - 11041', y2024: '8597 - 10097', y2025: '9100 - 10655' },
-        { branch: 'Civil Eng', y2023: '10849 - 13078', y2024: '9223 - 11365', y2025: '9800 - 12488' },
-        { branch: 'Materials Eng', y2023: '11813 - 14524', y2024: '10115 - 13009', y2025: '11500 - 13777' },
-        { branch: 'Digital Agriculture', y2023: 'N/A', y2024: 'N/A', y2025: '12000 - 14480' }
-    ];
+    function renderRankTrends() {
+        if (!trendsGrid) return;
+        const data = siteData.rankTrends || {};
 
-    if (trendsGrid) {
-        const formatRank = (rankStr) => {
-            if (rankStr === 'N/A') return `<span class="trend-rank-na">N/A</span>`;
-            const parts = rankStr.split(' - ');
-            if (parts.length === 2) {
-                return `
-                    <div class="trend-rank-stack">
-                        <span class="rank-open" title="Opening Rank">${parts[0]}</span>
-                        <div class="rank-divider"></div>
-                        <span class="rank-close" title="Closing Rank">${parts[1]}</span>
-                    </div>
-                `;
-            }
-            return `<span class="trend-rank">${rankStr}</span>`;
-        };
+        // Clear
+        trendsGrid.innerHTML = '';
 
-        branchTrends.forEach(trend => {
-            trendsGrid.insertAdjacentHTML('beforeend', `
-                <div class="trend-card">
-                    <div class="trend-card-title">${trend.branch}</div>
-                    <div class="trend-data-row">
-                        <div class="trend-col">
-                            <span class="trend-year">2023</span>
-                            ${formatRank(trend.y2023)}
-                        </div>
-                        <i class='bx bx-right-arrow-alt trend-arrow'></i>
-                        <div class="trend-col">
-                            <span class="trend-year">2024</span>
-                            ${formatRank(trend.y2024)}
-                        </div>
-                        <i class='bx bx-right-arrow-alt trend-arrow'></i>
-                        <div class="trend-col">
-                            <span class="trend-year">2025</span>
-                            ${formatRank(trend.y2025)}
-                        </div>
-                    </div>
-                </div>
-            `);
+        const categories = ['General','EWS','OBC-NCL','SC','ST'].filter(c => data[c]);
+
+        // Build category tabs
+        const catWrap = document.createElement('div');
+        catWrap.className = 'rank-cat-tabs';
+
+        let activeCat = categories[0] || null;
+        categories.forEach((cat, i) => {
+            const b = document.createElement('button');
+            b.className = 'rank-cat' + (i===0 ? ' active' : '');
+            b.textContent = cat;
+            b.addEventListener('click', () => {
+                catWrap.querySelectorAll('button').forEach(x=>x.classList.remove('active'));
+                b.classList.add('active');
+                activeCat = cat;
+                renderPoolTabs(activeCat);
+            });
+            catWrap.appendChild(b);
         });
+
+        trendsGrid.appendChild(catWrap);
+
+        const poolContainer = document.createElement('div');
+        poolContainer.className = 'rank-pool-wrap';
+        trendsGrid.appendChild(poolContainer);
+
+        function renderPoolTabs(category) {
+            poolContainer.innerHTML = '';
+            const pools = ['Gender Neutral','Female'];
+            let activePool = pools[0];
+
+            const poolTabs = document.createElement('div');
+            poolTabs.className = 'rank-pool-tabs';
+            pools.forEach((p, idx) => {
+                const btn = document.createElement('button');
+                btn.className = 'rank-pool' + (idx===0 ? ' active' : '');
+                btn.textContent = p;
+                btn.addEventListener('click', () => {
+                    poolTabs.querySelectorAll('button').forEach(x=>x.classList.remove('active'));
+                    btn.classList.add('active');
+                    activePool = p;
+                    renderTable(category, activePool);
+                });
+                poolTabs.appendChild(btn);
+            });
+
+            poolContainer.appendChild(poolTabs);
+
+            const tableWrap = document.createElement('div');
+            tableWrap.className = 'rank-table-wrap';
+            poolContainer.appendChild(tableWrap);
+
+            renderTable(category, activePool);
+
+            function renderTable(catKey, poolKey) {
+                const tableData = (siteData.rankTrends[catKey] && siteData.rankTrends[catKey][poolKey]) || {};
+                const branches = Object.keys(tableData);
+                tableWrap.innerHTML = '';
+
+                const table = document.createElement('table');
+                table.className = 'data-table rank-trends-table';
+                table.innerHTML = `
+                    <thead><tr><th>Branch</th><th>2023</th><th>2024</th><th>2025</th></tr></thead>
+                    <tbody></tbody>
+                `;
+
+                const tbody = table.querySelector('tbody');
+                if (branches.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="4" style="color:var(--text-muted);">No data available for ${catKey} / ${poolKey} (Round 5)</td></tr>`;
+                } else {
+                    branches.forEach(branch => {
+                        const v = tableData[branch] || {};
+                        const r2023 = v.y2023 || 'N/A';
+                        const r2024 = v.y2024 || 'N/A';
+                        const r2025 = v.y2025 || 'N/A';
+                        const tr = document.createElement('tr');
+                        tr.innerHTML = `<td>${branch}</td><td>${r2023}</td><td>${r2024}</td><td>${r2025}</td>`;
+                        tbody.appendChild(tr);
+                    });
+                }
+
+                tableWrap.appendChild(table);
+            }
+        }
+
+        // init
+        if (activeCat) renderPoolTabs(activeCat);
     }
+
+    renderRankTrends();
 
     // ─── BRANCH CHANGE ──────────────────────────────────────
     const bcDesc = document.getElementById('branch-change-description');

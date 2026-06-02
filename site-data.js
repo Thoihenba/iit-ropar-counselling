@@ -149,4 +149,38 @@ const siteData = {
         ],
         credit: "© 2026 IIT Ropar Counselling. Data sourced from public JoSAA archives.",
     },
+    // ─── RANK TRENDS (Round 5 data compiled from CollegePravesh) ─
+    // Structure: category -> pool -> branch -> {y2023, y2024, y2025}
+    rankTrends: {
+        "General": {
+            "Gender Neutral": {
+                "Artificial Intelligence and Data Engineering": { y2023: "N/A", y2024: "2245 - 2405", y2025: "2376 - 3191" },
+                "Computer Science and Engineering": { y2023: "N/A", y2024: "1158 - 2234", y2025: "1477 - 2357" },
+                "Mathematics and Computing": { y2023: "N/A", y2024: "1755 - 2974", y2025: "2122 - 3814" },
+                "Electrical Engineering": { y2023: "N/A", y2024: "3406 - 5209", y2025: "3940 - 5705" },
+                "IC Design & Technology": { y2023: "N/A", y2024: "4633 - 5217", y2025: "4633 - 5187" },
+                "Mechanical Engineering": { y2023: "N/A", y2024: "6602 - 7844", y2025: "6904 - 8009" },
+                "Chemical Engineering": { y2023: "N/A", y2024: "8597 - 9603", y2025: "7616 - 9373" },
+                "Civil Engineering": { y2023: "N/A", y2024: "9223 - 10771", y2025: "9142 - 10645" },
+                "Metallurgical and Materials Engineering": { y2023: "N/A", y2024: "10115 - 11313", y2025: "10655 - 11460" },
+                "Digital Agriculture": { y2023: "N/A", y2024: "9339 - 13148", y2025: "9339 - 13105" }
+            },
+            "Female": {
+                "Artificial Intelligence and Data Engineering": { y2023: "N/A", y2024: "N/A", y2025: "2376 - 3191" },
+                "Computer Science and Engineering": { y2023: "N/A", y2024: "N/A", y2025: "1477 - 2357" },
+                "Mathematics and Computing": { y2023: "N/A", y2024: "N/A", y2025: "2122 - 3814" },
+                "Electrical Engineering": { y2023: "N/A", y2024: "N/A", y2025: "3940 - 5705" },
+                "IC Design & Technology": { y2023: "N/A", y2024: "N/A", y2025: "4633 - 5187" },
+                "Mechanical Engineering": { y2023: "N/A", y2024: "N/A", y2025: "6904 - 8009" },
+                "Chemical Engineering": { y2023: "N/A", y2024: "N/A", y2025: "7616 - 9373" },
+                "Civil Engineering": { y2023: "N/A", y2024: "N/A", y2025: "9142 - 10645" },
+                "Metallurgical and Materials Engineering": { y2023: "N/A", y2024: "N/A", y2025: "10655 - 11460" },
+                "Digital Agriculture": { y2023: "N/A", y2024: "N/A", y2025: "9339 - 13105" }
+            }
+        },
+        "EWS": { "Gender Neutral": {}, "Female": {} },
+        "OBC-NCL": { "Gender Neutral": {}, "Female": {} },
+        "SC": { "Gender Neutral": {}, "Female": {} },
+        "ST": { "Gender Neutral": {}, "Female": {} }
+    }
 };
