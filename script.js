@@ -19,15 +19,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // ─── NAVBAR SCROLL BEHAVIOR ─────────────────────────────
     const navbar = document.getElementById('navbar');
+    let isScrolling = false;
     window.addEventListener('scroll', () => {
-        if (window.scrollY > 100) {
-            navbar.style.background = 'rgba(0, 0, 0, 0.9)';
-            document.body.classList.add('scrolled');
-        } else {
-            navbar.style.background = 'rgba(0, 0, 0, 0.65)';
-            document.body.classList.remove('scrolled');
+        if (!isScrolling) {
+            window.requestAnimationFrame(() => {
+                if (window.scrollY > 100) {
+                    navbar.style.background = 'rgba(0, 0, 0, 0.9)';
+                    document.body.classList.add('scrolled');
+                } else {
+                    navbar.style.background = 'rgba(0, 0, 0, 0.65)';
+                    document.body.classList.remove('scrolled');
+                }
+                isScrolling = false;
+            });
+            isScrolling = true;
         }
-    });
+    }, { passive: true });
 
     // ─── SCROLL ANIMATIONS ──────────────────────────────────
     const animateElements = document.querySelectorAll('.animate-on-scroll');
@@ -35,6 +42,7 @@ document.addEventListener('DOMContentLoaded', () => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
                 entry.target.classList.add('is-visible');
+                floatObserver.unobserve(entry.target);
             }
         });
     }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
@@ -44,7 +52,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // ─── TYPEWRITER ─────────────────────────────────────────
     const typewriterElement = document.querySelector('.typewriter');
     if (typewriterElement) {
-        const textToType = typewriterElement.getAttribute('data-text');
+        const textToType = typewriterElement.getAttribute('data-text') || '';
         typewriterElement.textContent = '';
         let i = 0;
         
@@ -323,11 +331,11 @@ document.addEventListener('DOMContentLoaded', () => {
     if (footer && siteData.footer) {
         const f = siteData.footer;
         
-        const quickLinksHtml = f.quickLinks.map(l => 
+        const quickLinksHtml = (f.quickLinks || []).map(l => 
             `<li><a href="${l.href}">${l.text}</a></li>`
         ).join('');
 
-        const dataSourcesHtml = f.dataSources.map(l => 
+        const dataSourcesHtml = (f.dataSources || []).map(l => 
             `<li><a href="${l.href}" target="_blank" rel="noopener">${l.text}</a></li>`
         ).join('');
 

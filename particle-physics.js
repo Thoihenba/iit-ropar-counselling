@@ -8,9 +8,15 @@ document.addEventListener('DOMContentLoaded', () => {
     let width = canvas.width = window.innerWidth;
     let height = canvas.height = window.innerHeight;
 
+    let lastWidth = window.innerWidth;
     window.addEventListener('resize', () => {
-        // Simple reload on resize to recreate targets
-        location.reload(); 
+        if (window.innerWidth !== lastWidth) {
+            // Only reload on actual orientation/width changes, not vertical scroll
+            location.reload();
+        } else {
+            // Just update height for URL bar hiding/showing
+            height = canvas.height = window.innerHeight;
+        }
     });
 
     // Physics constants
@@ -25,14 +31,14 @@ document.addEventListener('DOMContentLoaded', () => {
     window.addEventListener('mousemove', (e) => {
         mouse.x = e.clientX;
         mouse.y = e.clientY;
-    });
+    }, { passive: true });
     
     // The glow/wave system has been completely scrapped.
 
     // Scroll Dispersion
     window.addEventListener('scroll', () => {
         currentScroll = window.scrollY;
-    });
+    }, { passive: true });
 
     class Particle {
         constructor(x, y, color, objCenterX, objCenterY) {
@@ -123,6 +129,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function extractParticles(img, destCenterX, destCenterY, customScale, forceWhite = false) {
+        if (!img || !img.width || !img.height) return; // Prevent crash on broken image
         const offscreen = document.createElement('canvas');
         const octx = offscreen.getContext('2d');
         
