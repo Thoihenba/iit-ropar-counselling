@@ -57,7 +57,7 @@ document.addEventListener('DOMContentLoaded', () => {
             // Physics
             this.vx = (Math.random() - 0.5) * 10;
             this.vy = (Math.random() - 0.5) * 10;
-            this.size = Math.random() * 1.5 + 0.5;
+            this.size = (Math.random() * 1.5 + 0.5) * 0.9;
             this.color = color;
         }
 
@@ -177,7 +177,7 @@ document.addEventListener('DOMContentLoaded', () => {
         bgParticles.push({
             x: Math.random() * width,
             y: Math.random() * height,
-            size: Math.random() * 1.0 + 0.3,    // Smaller particles
+            size: (Math.random() * 1.0 + 0.3) * 0.9,    // Smaller particles (reduced by 10%)
             speedY: (-Math.random() * 0.15 - 0.05) * 1.3, // 30% faster movement
             alpha: Math.random() * 0.15 + 0.05,   // Duller baseline opacity
             glowIntensity: 0, // Current glow state
