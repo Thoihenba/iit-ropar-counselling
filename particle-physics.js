@@ -271,12 +271,12 @@ document.addEventListener('DOMContentLoaded', () => {
             p.glowTarget *= 0.992;
             
             // Draw the streak (tail)
-            ctx.globalAlpha = p.alpha * globalOpacity * 0.3; // Fainter tail
-            ctx.strokeStyle = 'rgba(212, 175, 55, 0.5)'; // Duller gold
-            ctx.lineWidth = p.size;
+            ctx.globalAlpha = p.alpha * globalOpacity * 0.8; // More prominent tail opacity
+            ctx.strokeStyle = 'rgba(255, 210, 100, 0.7)'; // Brighter, clearer gold
+            ctx.lineWidth = p.size * 1.2; // Slightly thicker tail
             ctx.beginPath();
             ctx.moveTo(p.x, p.y);
-            ctx.lineTo(p.x, p.y - p.speedY * 30); // Tail length follows path
+            ctx.lineTo(p.x, p.y - p.speedY * 70); // Much longer comet tail
             ctx.stroke();
             
             // Draw the head (core)
