@@ -144,6 +144,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 const branches = Object.keys(tableData);
                 tableWrap.innerHTML = '';
 
+                if (['OBC-NCL', 'SC', 'ST'].includes(catKey)) {
+                    const note = document.createElement('div');
+                    note.style.textAlign = 'right';
+                    note.style.fontSize = '0.75rem';
+                    note.style.color = 'var(--text-muted)';
+                    note.style.marginBottom = '16px';
+                    note.style.marginTop = '-4px';
+                    note.innerHTML = '<i class=\'bx bx-info-circle\'></i> Showing Category Ranks';
+                    tableWrap.appendChild(note);
+                }
+
                 const table = document.createElement('table');
                 table.className = 'data-table rank-trends-table';
                 table.innerHTML = `
