@@ -19,15 +19,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // ─── NAVBAR SCROLL BEHAVIOR ─────────────────────────────
     const navbar = document.getElementById('navbar');
+    let isScrolling = false;
     window.addEventListener('scroll', () => {
-        if (window.scrollY > 100) {
-            navbar.style.background = 'rgba(0, 0, 0, 0.9)';
-            document.body.classList.add('scrolled');
-        } else {
-            navbar.style.background = 'rgba(0, 0, 0, 0.65)';
-            document.body.classList.remove('scrolled');
+        if (!isScrolling) {
+            window.requestAnimationFrame(() => {
+                if (window.scrollY > 100) {
+                    navbar.style.background = 'rgba(0, 0, 0, 0.9)';
+                    document.body.classList.add('scrolled');
+                } else {
+                    navbar.style.background = 'rgba(0, 0, 0, 0.65)';
+                    document.body.classList.remove('scrolled');
+                }
+                isScrolling = false;
+            });
+            isScrolling = true;
         }
-    });
+    }, { passive: true });
 
     // ─── SCROLL ANIMATIONS ──────────────────────────────────
     const animateElements = document.querySelectorAll('.animate-on-scroll');
@@ -35,6 +42,7 @@ document.addEventListener('DOMContentLoaded', () => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
                 entry.target.classList.add('is-visible');
+                floatObserver.unobserve(entry.target);
             }
         });
     }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
@@ -44,7 +52,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // ─── TYPEWRITER ─────────────────────────────────────────
     const typewriterElement = document.querySelector('.typewriter');
     if (typewriterElement) {
-        const textToType = typewriterElement.getAttribute('data-text');
+        const textToType = typewriterElement.getAttribute('data-text') || '';
         typewriterElement.textContent = '';
         let i = 0;
         
@@ -94,7 +102,7 @@ document.addEventListener('DOMContentLoaded', () => {
         categories.forEach((cat, i) => {
             const b = document.createElement('button');
             b.className = 'rank-cat' + (i===0 ? ' active' : '');
-            b.textContent = cat === 'OBC-NCL' ? 'OBC-NCL (category rank)' : cat;
+            b.textContent = cat;
             b.addEventListener('click', () => {
                 catWrap.querySelectorAll('button').forEach(x=>x.classList.remove('active'));
                 b.classList.add('active');
@@ -106,28 +114,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
         trendsGrid.appendChild(catWrap);
 
-        // Category rank note element (updated on category change)
-        const catNote = document.createElement('div');
-        catNote.className = 'category-rank-note';
-        catNote.style.margin = '8px 0 10px';
-        catNote.style.color = 'var(--text-muted)';
-        catNote.style.display = 'none';
-        trendsGrid.appendChild(catNote);
-
         const poolContainer = document.createElement('div');
         poolContainer.className = 'rank-pool-wrap';
         trendsGrid.appendChild(poolContainer);
 
         function renderPoolTabs(category) {
             poolContainer.innerHTML = '';
-            // Update shared category rank note if present
-            const catMeta = siteData.rankTrends[category] || {};
-            if (catMeta.categoryRank) {
-                catNote.textContent = `${catMeta.categoryRank} (category rank)`;
-                catNote.style.display = 'block';
-            } else {
-                catNote.style.display = 'none';
-            }
+            
             const pools = ['Gender Neutral','Female'];
             let activePool = pools[0];
 
@@ -158,6 +151,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 const tableData = (siteData.rankTrends[catKey] && siteData.rankTrends[catKey][poolKey]) || {};
                 const branches = Object.keys(tableData);
                 tableWrap.innerHTML = '';
+
+                if (['OBC-NCL', 'SC', 'ST'].includes(catKey)) {
+                    const note = document.createElement('div');
+                    note.style.textAlign = 'right';
+                    note.style.fontSize = '0.75rem';
+                    note.style.color = 'var(--text-muted)';
+                    note.style.marginBottom = '16px';
+                    note.style.marginTop = '-4px';
+                    note.innerHTML = '<i class=\'bx bx-info-circle\'></i> Showing Category Ranks';
+                    tableWrap.appendChild(note);
+                }
 
                 const table = document.createElement('table');
                 table.className = 'data-table rank-trends-table';
@@ -327,11 +331,11 @@ document.addEventListener('DOMContentLoaded', () => {
     if (footer && siteData.footer) {
         const f = siteData.footer;
         
-        const quickLinksHtml = f.quickLinks.map(l => 
+        const quickLinksHtml = (f.quickLinks || []).map(l => 
             `<li><a href="${l.href}">${l.text}</a></li>`
         ).join('');
 
-        const dataSourcesHtml = f.dataSources.map(l => 
+        const dataSourcesHtml = (f.dataSources || []).map(l => 
             `<li><a href="${l.href}" target="_blank" rel="noopener">${l.text}</a></li>`
         ).join('');
 

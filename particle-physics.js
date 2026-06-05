@@ -8,9 +8,15 @@ document.addEventListener('DOMContentLoaded', () => {
     let width = canvas.width = window.innerWidth;
     let height = canvas.height = window.innerHeight;
 
+    let lastWidth = window.innerWidth;
     window.addEventListener('resize', () => {
-        // Simple reload on resize to recreate targets
-        location.reload(); 
+        if (window.innerWidth !== lastWidth) {
+            // Only reload on actual orientation/width changes, not vertical scroll
+            location.reload();
+        } else {
+            // Just update height for URL bar hiding/showing
+            height = canvas.height = window.innerHeight;
+        }
     });
 
     // Physics constants
@@ -25,14 +31,14 @@ document.addEventListener('DOMContentLoaded', () => {
     window.addEventListener('mousemove', (e) => {
         mouse.x = e.clientX;
         mouse.y = e.clientY;
-    });
+    }, { passive: true });
     
     // The glow/wave system has been completely scrapped.
 
     // Scroll Dispersion
     window.addEventListener('scroll', () => {
         currentScroll = window.scrollY;
-    });
+    }, { passive: true });
 
     class Particle {
         constructor(x, y, color, objCenterX, objCenterY) {
@@ -57,7 +63,7 @@ document.addEventListener('DOMContentLoaded', () => {
             // Physics
             this.vx = (Math.random() - 0.5) * 10;
             this.vy = (Math.random() - 0.5) * 10;
-            this.size = Math.random() * 1.5 + 0.5;
+            this.size = (Math.random() * 1.5 + 0.5) * 0.9;
             this.color = color;
         }
 
@@ -123,6 +129,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function extractParticles(img, destCenterX, destCenterY, customScale, forceWhite = false) {
+        if (!img || !img.width || !img.height) return; // Prevent crash on broken image
         const offscreen = document.createElement('canvas');
         const octx = offscreen.getContext('2d');
         
@@ -177,8 +184,8 @@ document.addEventListener('DOMContentLoaded', () => {
         bgParticles.push({
             x: Math.random() * width,
             y: Math.random() * height,
-            size: Math.random() * 1.0 + 0.3,    // Smaller particles
-            speedY: -Math.random() * 0.15 - 0.05, // Slower movement
+            size: (Math.random() * 1.0 + 0.3) * 0.9,    // Smaller particles (reduced by 10%)
+            speedY: (-Math.random() * 0.15 - 0.05) * 1.3, // 30% faster movement
             alpha: Math.random() * 0.15 + 0.05,   // Duller baseline opacity
             glowIntensity: 0, // Current glow state
             glowTarget: 0     // Target glow state for smooth interpolation
@@ -259,43 +266,43 @@ document.addEventListener('DOMContentLoaded', () => {
             p.y += p.speedY;
             if (p.y < -10) p.y = height + 10;
             
-            // Randomly trigger a fuzzy glow on the head
-            if (Math.random() < 0.002) { // Less frequent
-                p.glowTarget = Math.random() * 0.5 + 0.1; // Duller target intensity
+            // Randomly trigger a brighter glow (aiming for 20-30% active at any time)
+            if (Math.random() < 0.0015) { 
+                p.glowTarget = Math.random() * 0.8 + 0.4; // Brighter target intensity
             }
             
-            // Smoothly interpolate the glow (slower speed)
+            // Smoothly interpolate the glow
             p.glowIntensity += (p.glowTarget - p.glowIntensity) * 0.015;
             
-            // Slowly decay target back to 0 so it fades out naturally (slower deglow)
+            // Slowly decay target back to 0 so it fades out naturally
             p.glowTarget *= 0.992;
             
             // Draw the streak (tail)
-            ctx.globalAlpha = p.alpha * globalOpacity * 0.3; // Fainter tail
-            ctx.strokeStyle = 'rgba(212, 175, 55, 0.5)'; // Duller gold
-            ctx.lineWidth = p.size;
+            ctx.globalAlpha = p.alpha * globalOpacity * 0.8; // More prominent tail opacity
+            ctx.strokeStyle = 'rgba(255, 210, 100, 0.7)'; // Brighter, clearer gold
+            ctx.lineWidth = p.size * 1.2; // Slightly thicker tail
             ctx.beginPath();
             ctx.moveTo(p.x, p.y);
-            ctx.lineTo(p.x, p.y - p.speedY * 30); // Tail length follows slow path
+            ctx.lineTo(p.x, p.y - p.speedY * 70); // Much longer comet tail
             ctx.stroke();
             
             // Draw the head (core)
             ctx.globalAlpha = p.alpha * globalOpacity;
-            ctx.fillStyle = 'rgba(255, 220, 100, 0.5)'; // Duller head
+            ctx.fillStyle = 'rgba(255, 220, 100, 0.8)'; // Slightly brighter head
             ctx.fillRect(p.x - p.size/2, p.y - p.size/2, p.size*2, p.size*2);
             
-            // Draw the fuzzy random glow around the head
+            // Draw the luminescent fuzzy glow around the head
             if (p.glowIntensity > 0.02) {
                 ctx.globalAlpha = p.glowIntensity * globalOpacity;
                 
-                // Radial gradient for a soft, fuzzy bloom (Reduced fuzz radius)
-                let radGrad = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.size * 3.5);
-                radGrad.addColorStop(0, 'rgba(255, 230, 100, 0.6)'); // Duller glow
-                radGrad.addColorStop(1, 'rgba(255, 230, 100, 0)');
+                // Radial gradient for a soft, highly luminescent bloom
+                let radGrad = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.size * 5);
+                radGrad.addColorStop(0, 'rgba(255, 240, 120, 0.9)'); // Brighter, luminescent glow
+                radGrad.addColorStop(1, 'rgba(255, 240, 120, 0)');
                 ctx.fillStyle = radGrad;
                 
                 ctx.beginPath();
-                ctx.arc(p.x, p.y, p.size * 3.5, 0, Math.PI * 2);
+                ctx.arc(p.x, p.y, p.size * 5, 0, Math.PI * 2);
                 ctx.fill();
             }
         });
